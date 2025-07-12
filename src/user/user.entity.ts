@@ -1,30 +1,36 @@
-import {Column, CreateDateColumn, DeleteDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
-import {ProfileEnum} from "../shared/enums/profile.enum";
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import { ProfileEnum } from '../shared/enums/profile.enum';
 
-@Entity("users")
-export class UserEntity{
-    
-    @PrimaryGeneratedColumn("uuid")
-    id: string;
-    
-    @Column({length: 100})
-    name: string;
+@Entity('users')
+export class UserEntity {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
-    @Column({unique: true, length: 80})
-    email: string;
+  @Column({ length: 100 })
+  name: string;
 
-    @Column({ select: false, length: 80 })
-    password: string;
-    
-    @Column({ type: "enum", enum: ProfileEnum })
-    profile: ProfileEnum = ProfileEnum.Client;
+  @Column({ unique: true, length: 80 })
+  email: string;
 
-    @CreateDateColumn()
-    createdAt: Date;
+  @Column({ select: false, length: 80 })
+  password: string;
 
-    @UpdateDateColumn()
-    updatedAt: Date;
+  @Column({ type: 'enum', enum: ProfileEnum })
+  profile: ProfileEnum = ProfileEnum.Client;
 
-    @DeleteDateColumn()
-    deletedAt?: Date;
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt?: Date;
 }
