@@ -8,7 +8,10 @@ import {
   Put,
   Query,
   Res,
+  Request,
   UseFilters,
+  UseGuards,
+  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserUseCase } from './use-cases/create-user.use-case';
 import { CreateUserInputDto } from './dtos/create-user-input.dto';
@@ -22,7 +25,15 @@ import { GetUsersInputDto } from './dtos/get-users.input.dto';
 import { Response } from 'express';
 import { GetUserByIdUseCase } from './use-cases/get-user-by-id.use-case';
 import { EntityNotFoundFilter } from '../shared/filters/entity-not-found.filter';
+import { Profile } from '../shared/decorators/profile.decorator';
+import { ProfileEnum } from '../shared/enums/profile.enum';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { ProfileGuard } from '../shared/guards/profile.guard';
+import { AccessTokenPayload } from '../shared/value-objects/access-token-payload';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'), ProfileGuard)
 @Controller('users')
 @UseFilters(EntityNotFoundFilter)
 export class UserController {
@@ -35,6 +46,7 @@ export class UserController {
   ) {}
 
   @Post()
+  @Profile(ProfileEnum.Admin)
   async createUser(
     @Body() createUserInputDto: CreateUserInputDto,
   ): Promise<UserOutputDto> {
@@ -42,6 +54,7 @@ export class UserController {
   }
 
   @Get()
+  @Profile(ProfileEnum.Admin)
   async getUsers(
     @Query() getUsersInputDto: GetUsersInputDto,
     @Res({ passthrough: true }) response: Response,
@@ -65,7 +78,15 @@ export class UserController {
   async updateUser(
     @Param('userId') userId: string,
     @Body() updateUserInputDto: UpdateUserInputDto,
+    @Request() request,
   ): Promise<UserOutputDto> {
+    const accessTokenPayload = request.user as AccessTokenPayload;
+    if (
+      userId !== accessTokenPayload.sub &&
+      accessTokenPayload.role !== ProfileEnum.Admin
+    )
+      throw new UnauthorizedException('You can only change your own profile');
+
     return this.updateUserUseCase.execute(userId, updateUserInputDto);
   }
 
@@ -73,7 +94,12 @@ export class UserController {
   async updatePassword(
     @Param('userId') userId: string,
     @Body() updatePasswordInputDto: UpdatePasswordInputDto,
+    @Request() request,
   ): Promise<void> {
+    const accessTokenPayload = request.user as AccessTokenPayload;
+    if (userId !== accessTokenPayload.sub)
+      throw new UnauthorizedException('You can only change your own password');
+
     return this.updatePasswordUseCase.execute(userId, updatePasswordInputDto);
   }
 }

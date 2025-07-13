@@ -34,6 +34,13 @@ export class UserRepository
     return this.findOneByOrFail({ id: userId, password });
   }
 
+  async getUserByEmailAndPassword(
+    email: string,
+    password: string,
+  ): Promise<UserEntity> {
+    return this.findOneByOrFail({ email, password });
+  }
+
   async getUsers(
     usersFilter: UsersFilterInterface,
   ): Promise<[UserEntity[], number]> {

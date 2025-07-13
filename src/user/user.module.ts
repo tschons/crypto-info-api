@@ -23,5 +23,12 @@ import { UpdatePasswordUserCase } from './use-cases/update-password.user-case';
       useClass: UserRepository,
     },
   ],
+  exports: [
+    TypeOrmModule,
+    {
+      provide: 'UserRepositoryInterface',
+      useClass: UserRepository,
+    },
+  ],
 })
 export class UserModule {}
