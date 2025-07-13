@@ -1,6 +1,7 @@
 import { ProfileEnum } from '../../shared/enums/profile.enum';
+import { Exclude } from 'class-transformer';
 
-export class CreateUserOutputDto {
+export class UserOutputDto {
   id: string;
   name: string;
   email: string;
@@ -8,5 +9,7 @@ export class CreateUserOutputDto {
   profile: ProfileEnum;
   createdAt: Date;
   updatedAt: Date;
+
+  @Exclude()
   deletedAt?: Date;
 }
