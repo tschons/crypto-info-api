@@ -4,12 +4,14 @@ import { UserController } from './user.controller';
 import { UserRepository } from './user.repository';
 import { UserEntity } from './user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { GetUsersUseCase } from './use-cases/get-users.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity])],
   controllers: [UserController],
   providers: [
     CreateUserUseCase,
+    GetUsersUseCase,
     {
       provide: 'UserRepositoryInterface',
       useClass: UserRepository,

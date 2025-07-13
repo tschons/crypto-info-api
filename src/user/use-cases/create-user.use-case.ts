@@ -1,7 +1,7 @@
 import { UseCaseInterface } from '../../shared/interfaces/use-case.interface';
 import { CreateUserInputDto } from '../dtos/create-user-input.dto';
 import { Inject, Injectable } from '@nestjs/common';
-import { CreateUserOutputDto } from '../dtos/create-user-output.dto';
+import { UserOutputDto } from '../dtos/user-output.dto';
 import { UserRepositoryInterface } from '../interfaces/user-repository.interface';
 import { plainToInstance } from 'class-transformer';
 import { UserEntity } from '../user.entity';
@@ -15,9 +15,9 @@ export class CreateUserUseCase implements UseCaseInterface {
 
   async execute(
     createUserInputDto: CreateUserInputDto,
-  ): Promise<CreateUserOutputDto> {
-    const userEntity = plainToInstance(UserEntity, createUserInputDto);
-
-    return await this.userRepository.createUser(userEntity);
+  ): Promise<UserOutputDto> {
+    let userEntity = plainToInstance(UserEntity, createUserInputDto);
+    userEntity = await this.userRepository.createUser(userEntity);
+    return plainToInstance(UserOutputDto, userEntity);
   }
 }
