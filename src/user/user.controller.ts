@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Put,
   Query,
@@ -13,6 +14,8 @@ import { CreateUserUseCase } from './use-cases/create-user.use-case';
 import { CreateUserInputDto } from './dtos/create-user-input.dto';
 import { UpdateUserInputDto } from './dtos/update-user-input.dto';
 import { UpdateUserUseCase } from './use-cases/update-user.use-case';
+import { UpdatePasswordInputDto } from './dtos/update-password-input.dto';
+import { UpdatePasswordUserCase } from './use-cases/update-password.user-case';
 import { UserOutputDto } from './dtos/user-output.dto';
 import { GetUsersUseCase } from './use-cases/get-users.use-case';
 import { GetUsersInputDto } from './dtos/get-users.input.dto';
@@ -26,6 +29,7 @@ export class UserController {
   constructor(
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly updateUserUseCase: UpdateUserUseCase,
+    private readonly updatePasswordUseCase: UpdatePasswordUserCase,
     private readonly getUsersUseCase: GetUsersUseCase,
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
   ) {}
@@ -63,5 +67,13 @@ export class UserController {
     @Body() updateUserInputDto: UpdateUserInputDto,
   ): Promise<UserOutputDto> {
     return this.updateUserUseCase.execute(userId, updateUserInputDto);
+  }
+
+  @Patch('/:userId/password')
+  async updatePassword(
+    @Param('userId') userId: string,
+    @Body() updatePasswordInputDto: UpdatePasswordInputDto,
+  ): Promise<void> {
+    return this.updatePasswordUseCase.execute(userId, updatePasswordInputDto);
   }
 }
