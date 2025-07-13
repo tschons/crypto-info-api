@@ -7,4 +7,8 @@ export interface UserRepositoryInterface {
   getUsers(usersFilter: UsersFilterInterface): Promise<[UserEntity[], number]>;
   getUserById(userId: string): Promise<UserEntity>;
   getUserByIdAndPassword(userId: string, password: string): Promise<UserEntity>;
+  getUserByEmailAndPassword(
+    email: string,
+    password: string,
+  ): Promise<UserEntity>;
 }

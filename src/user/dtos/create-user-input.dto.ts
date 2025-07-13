@@ -6,6 +6,7 @@ export class CreateUserInputDto {
   @Length(3, 100, { message: 'Name must be between 3 and 100 characters' })
   name: string;
 
+  @IsNotEmpty({ message: 'Email is required' })
   @IsEmail({}, { message: 'Invalid email' })
   email: string;
 

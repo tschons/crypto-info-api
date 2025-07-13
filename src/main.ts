@@ -11,6 +11,12 @@ async function bootstrap() {
   const swaggerConfig = new DocumentBuilder()
     .setTitle('Crypto Info API')
     .setDescription('API for Cryptocurrency Information')
+    .addBearerAuth({
+      type: 'http',
+      scheme: 'bearer',
+      bearerFormat: 'JWT',
+      in: 'header',
+    })
     .build();
 
   const documentFactory = () =>
