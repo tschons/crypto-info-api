@@ -1,10 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { Like, Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { UserRepositoryInterface } from './interfaces/user-repository.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersFilterInterface } from './interfaces/users-filter.interface';
 import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
+import { UserOutputDto } from './dtos/user-output.dto';
 
 @Injectable()
 export class UserRepository
@@ -40,5 +41,9 @@ export class UserRepository
       take: usersFilter.pageSize,
       where: filter,
     });
+  }
+
+  async getUserById(userId: string): Promise<UserEntity> {
+    return this.findOneByOrFail({ id: userId });
   }
 }

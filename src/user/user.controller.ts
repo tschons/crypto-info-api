@@ -1,16 +1,29 @@
-import { Body, Controller, Get, Post, Query, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  Res,
+  UseFilters,
+} from '@nestjs/common';
 import { CreateUserUseCase } from './use-cases/create-user.use-case';
 import { CreateUserInputDto } from './dtos/create-user-input.dto';
 import { UserOutputDto } from './dtos/user-output.dto';
 import { GetUsersUseCase } from './use-cases/get-users.use-case';
 import { GetUsersInputDto } from './dtos/get-users.input.dto';
 import { Response } from 'express';
+import { GetUserByIdUseCase } from './use-cases/get-user-by-id.use-case';
+import { EntityNotFoundFilter } from '../shared/filters/entity-not-found.filter';
 
 @Controller('users')
+@UseFilters(EntityNotFoundFilter)
 export class UserController {
   constructor(
     private readonly createUserUseCase: CreateUserUseCase,
     private readonly getUsersUseCase: GetUsersUseCase,
+    private readonly getUserByIdUseCase: GetUserByIdUseCase,
   ) {}
 
   @Post()
@@ -33,5 +46,10 @@ export class UserController {
     response.set('X-Total-Pages', paginatedUsers.totalPages.toString());
 
     return paginatedUsers.items;
+  }
+
+  @Get('/:userId')
+  async getUserById(@Param('userId') userId: string): Promise<UserOutputDto> {
+    return this.getUserByIdUseCase.execute(userId);
   }
 }
