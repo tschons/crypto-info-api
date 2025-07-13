@@ -14,7 +14,6 @@ import typeormConfig from './config/typeorm';
       ignoreEnvFile: process.env.NODE_ENV === 'production',
     }),
     TypeOrmModule.forRoot(typeormConfig),
-    AuthModule,
     UserModule,
   ],
   controllers: [],
