@@ -27,6 +27,13 @@ export class UserRepository
     return this.save(userEntity);
   }
 
+  async getUserByIdAndPassword(
+    userId: string,
+    password: string,
+  ): Promise<UserEntity> {
+    return this.findOneByOrFail({ id: userId, password });
+  }
+
   async getUsers(
     usersFilter: UsersFilterInterface,
   ): Promise<[UserEntity[], number]> {

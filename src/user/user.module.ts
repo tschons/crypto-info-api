@@ -7,6 +7,7 @@ import { UserEntity } from './user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GetUsersUseCase } from './use-cases/get-users.use-case';
 import { GetUserByIdUseCase } from './use-cases/get-user-by-id.use-case';
+import { UpdatePasswordUserCase } from './use-cases/update-password.user-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity])],
@@ -14,6 +15,7 @@ import { GetUserByIdUseCase } from './use-cases/get-user-by-id.use-case';
   providers: [
     CreateUserUseCase,
     UpdateUserUseCase,
+    UpdatePasswordUserCase,
     GetUsersUseCase,
     GetUserByIdUseCase,
     {
