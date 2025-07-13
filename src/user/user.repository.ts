@@ -1,11 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { Like, Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { UserRepositoryInterface } from './interfaces/user-repository.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersFilterInterface } from './interfaces/users-filter.interface';
 import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
-import { UserOutputDto } from './dtos/user-output.dto';
 
 @Injectable()
 export class UserRepository
@@ -22,6 +21,10 @@ export class UserRepository
     const insertResult = await this.insert(userEntity);
     userEntity.id = insertResult.identifiers[0].id;
     return userEntity;
+  }
+
+  async updateUser(userEntity: UserEntity): Promise<UserEntity> {
+    return this.save(userEntity);
   }
 
   async getUsers(

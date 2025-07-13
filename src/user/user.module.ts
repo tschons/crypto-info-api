@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { CreateUserUseCase } from './use-cases/create-user.use-case';
+import { UpdateUserUseCase } from './use-cases/update-user.use-case';
 import { UserController } from './user.controller';
 import { UserRepository } from './user.repository';
 import { UserEntity } from './user.entity';
@@ -12,6 +13,7 @@ import { GetUserByIdUseCase } from './use-cases/get-user-by-id.use-case';
   controllers: [UserController],
   providers: [
     CreateUserUseCase,
+    UpdateUserUseCase,
     GetUsersUseCase,
     GetUserByIdUseCase,
     {

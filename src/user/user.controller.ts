@@ -4,12 +4,15 @@ import {
   Get,
   Param,
   Post,
+  Put,
   Query,
   Res,
   UseFilters,
 } from '@nestjs/common';
 import { CreateUserUseCase } from './use-cases/create-user.use-case';
 import { CreateUserInputDto } from './dtos/create-user-input.dto';
+import { UpdateUserInputDto } from './dtos/update-user-input.dto';
+import { UpdateUserUseCase } from './use-cases/update-user.use-case';
 import { UserOutputDto } from './dtos/user-output.dto';
 import { GetUsersUseCase } from './use-cases/get-users.use-case';
 import { GetUsersInputDto } from './dtos/get-users.input.dto';
@@ -22,6 +25,7 @@ import { EntityNotFoundFilter } from '../shared/filters/entity-not-found.filter'
 export class UserController {
   constructor(
     private readonly createUserUseCase: CreateUserUseCase,
+    private readonly updateUserUseCase: UpdateUserUseCase,
     private readonly getUsersUseCase: GetUsersUseCase,
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
   ) {}
@@ -30,7 +34,7 @@ export class UserController {
   async createUser(
     @Body() createUserInputDto: CreateUserInputDto,
   ): Promise<UserOutputDto> {
-    return await this.createUserUseCase.execute(createUserInputDto);
+    return this.createUserUseCase.execute(createUserInputDto);
   }
 
   @Get()
@@ -51,5 +55,13 @@ export class UserController {
   @Get('/:userId')
   async getUserById(@Param('userId') userId: string): Promise<UserOutputDto> {
     return this.getUserByIdUseCase.execute(userId);
+  }
+
+  @Put('/:userId')
+  async updateUser(
+    @Param('userId') userId: string,
+    @Body() updateUserInputDto: UpdateUserInputDto,
+  ): Promise<UserOutputDto> {
+    return this.updateUserUseCase.execute(userId, updateUserInputDto);
   }
 }
