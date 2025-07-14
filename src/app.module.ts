@@ -3,6 +3,7 @@ import { AuthModule } from './auth/auth.module';
 import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CryptoModule } from './crypto/crypto.module';
 import typeormConfig from './config/typeorm';
 
 @Module({
@@ -16,6 +17,7 @@ import typeormConfig from './config/typeorm';
     TypeOrmModule.forRoot(typeormConfig),
     AuthModule,
     UserModule,
+    CryptoModule,
   ],
   controllers: [],
 })
