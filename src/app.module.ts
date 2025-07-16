@@ -1,10 +1,26 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { AuthModule } from './auth/auth.module';
+import { ConfigModule } from '@nestjs/config';
+import { UserModule } from './user/user.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CryptoModule } from './crypto/crypto.module';
+import { HashModule } from './hash/hash.module';
+import typeormConfig from './config/typeorm';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      cache: true,
+      envFilePath: ['.env.local', '.env'],
+      ignoreEnvFile: process.env.NODE_ENV === 'production',
+    }),
+    TypeOrmModule.forRoot(typeormConfig),
+    AuthModule,
+    UserModule,
+    CryptoModule,
+    HashModule,
+  ],
+  controllers: [],
 })
 export class AppModule {}
