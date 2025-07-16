@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { ConsoleLogger, Logger, Module } from '@nestjs/common';
 import { CreateUserUseCase } from './use-cases/create-user.use-case';
 import { UpdateUserUseCase } from './use-cases/update-user.use-case';
 import { UserController } from './user.controller';
@@ -13,6 +13,7 @@ import { UpdatePasswordUserCase } from './use-cases/update-password.user-case';
   imports: [TypeOrmModule.forFeature([UserEntity])],
   controllers: [UserController],
   providers: [
+    Logger,
     CreateUserUseCase,
     UpdateUserUseCase,
     UpdatePasswordUserCase,

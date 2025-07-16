@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { GenerateTokenUseCase } from './use-cases/generate-token.use-case';
 import { PassportModule } from '@nestjs/passport';
@@ -17,6 +17,7 @@ import { RefreshTokenUseCase } from './use-cases/refresh-token.use-case';
     JwtStrategy,
     GenerateTokenUseCase,
     RefreshTokenUseCase,
+    Logger,
   ],
 })
 export class AuthModule {}

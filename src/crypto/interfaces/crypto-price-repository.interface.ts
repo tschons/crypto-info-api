@@ -6,7 +6,6 @@ export interface CryptoPriceRepositoryInterface {
   ): Promise<CryptoPriceEntity>;
   getCryptoPriceById(
     id: string,
-    maxTimeGap: number,
+    cacheInMinutes: number,
   ): Promise<CryptoPriceEntity>;
-  getCryptoPriceBySymbol(symbol: string): Promise<CryptoPriceEntity>;
 }

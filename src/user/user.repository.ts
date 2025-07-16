@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Like, Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { UserRepositoryInterface } from './interfaces/user-repository.interface';
@@ -13,17 +13,20 @@ export class UserRepository
 {
   constructor(
     @InjectRepository(UserEntity) repository: Repository<UserEntity>,
+    private readonly logger: Logger,
   ) {
     super(repository.target, repository.manager, repository.queryRunner);
   }
 
   async createUser(userEntity: UserEntity): Promise<UserEntity> {
+    this.logger.debug(`Creating user: ${JSON.stringify(userEntity)}`);
     const insertResult = await this.insert(userEntity);
     userEntity.id = insertResult.identifiers[0].id;
     return userEntity;
   }
 
   async updateUser(userEntity: UserEntity): Promise<UserEntity> {
+    this.logger.debug(`Updating user: ${JSON.stringify(userEntity)}`);
     return this.save(userEntity);
   }
 
@@ -31,6 +34,7 @@ export class UserRepository
     userId: string,
     password: string,
   ): Promise<UserEntity> {
+    this.logger.debug(`Getting user by id and password: ${userId}`);
     return this.findOneByOrFail({ id: userId, password });
   }
 
@@ -38,6 +42,7 @@ export class UserRepository
     email: string,
     password: string,
   ): Promise<UserEntity> {
+    this.logger.debug(`Getting user by email and password: ${email}`);
     return this.findOneByOrFail({ email, password });
   }
 
@@ -52,6 +57,7 @@ export class UserRepository
 
     if (usersFilter.profile) filter.profile = usersFilter.profile;
 
+    this.logger.debug(`Getting users: ${JSON.stringify(usersFilter)}`);
     return await this.findAndCount({
       order: { [usersFilter.orderBy]: usersFilter.order },
       skip: (usersFilter.page - 1) * usersFilter.pageSize,
@@ -61,6 +67,7 @@ export class UserRepository
   }
 
   async getUserById(userId: string): Promise<UserEntity> {
+    this.logger.debug(`Getting user by id: ${userId}`);
     return this.findOneByOrFail({ id: userId });
   }
 }

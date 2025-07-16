@@ -1,7 +1,11 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, UseGuards } from '@nestjs/common';
 import { CryptoPriceOutputDto } from './dtos/crypto-price-output.dto';
 import { GetCryptoPriceByIdUseCase } from './use-cases/get-crypto-price-by-id.use-case';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { AuthGuard } from '@nestjs/passport';
 
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
 @Controller('crypto')
 export class CryptoController {
   constructor(
