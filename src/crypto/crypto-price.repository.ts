@@ -1,6 +1,6 @@
 import { CryptoPriceRepositoryInterface } from './interfaces/crypto-price-repository.interface';
 import { CryptoPriceEntity } from './crypto-price.entity';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Injectable } from '@nestjs/common';
 
@@ -22,8 +22,12 @@ export class CryptoPriceRepository
     return this.save(cryptoPriceEntity);
   }
 
-  async getCryptoPriceById(id: string): Promise<CryptoPriceEntity> {
-    return this.findOneByOrFail({ id });
+  async getCryptoPriceById(
+    id: string,
+    maxTimeGap: number,
+  ): Promise<CryptoPriceEntity> {
+    const xMinutosAgo = new Date(Date.now() - maxTimeGap * 60 * 1000);
+    return this.findOneByOrFail({ id, updatedAt: MoreThan(xMinutosAgo) });
   }
 
   async getCryptoPriceBySymbol(symbol: string): Promise<CryptoPriceEntity> {

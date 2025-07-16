@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryColumn } from 'typeorm';
+import { Column, Entity, PrimaryColumn, UpdateDateColumn } from 'typeorm';
+import { Decimal } from 'decimal.js';
+import { DecimalColumnTransformer } from './transformers/decimal-column.transformer';
 
 @Entity('crypto_prices')
 export class CryptoPriceEntity {
@@ -11,21 +13,51 @@ export class CryptoPriceEntity {
   @Column({ length: 30 })
   symbol: string;
 
-  @Column('decimal', { precision: 18, scale: 2 })
-  marketCap: number;
+  @Column('decimal', {
+    precision: 18,
+    scale: 2,
+    transformer: new DecimalColumnTransformer(),
+  })
+  marketCap: Decimal;
 
-  @Column('decimal', { precision: 10, scale: 4 })
-  last24HoursVariation: number;
+  @Column('decimal', {
+    precision: 24,
+    scale: 18,
+    transformer: new DecimalColumnTransformer(),
+  })
+  last24HoursVariation: Decimal;
 
-  @Column('decimal', { precision: 10, scale: 4 })
-  last7DaysVariation: number;
+  @Column('decimal', {
+    precision: 24,
+    scale: 18,
+    transformer: new DecimalColumnTransformer(),
+  })
+  last7DaysVariation: Decimal;
 
-  @Column('decimal', { precision: 24, scale: 12 })
-  allTimeHigh: number;
+  @Column('decimal', {
+    precision: 24,
+    scale: 12,
+    transformer: new DecimalColumnTransformer(),
+  })
+  allTimeHigh: Decimal;
 
-  @Column('decimal', { precision: 24, scale: 12 })
-  allTimeLow: number;
+  @Column('decimal', {
+    precision: 24,
+    scale: 12,
+    transformer: new DecimalColumnTransformer(),
+  })
+  allTimeLow: Decimal;
 
-  @Column('decimal', { precision: 24, scale: 12 })
-  currentPrice: number;
+  @Column('decimal', {
+    precision: 24,
+    scale: 12,
+    transformer: new DecimalColumnTransformer(),
+  })
+  currentPrice: Decimal;
+
+  @Column()
+  dateTime: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
 }
