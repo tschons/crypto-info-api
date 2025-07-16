@@ -4,6 +4,9 @@ export interface CryptoPriceRepositoryInterface {
   createOrUpdateCryptoPrice(
     cryptoPriceEntity: CryptoPriceEntity,
   ): Promise<CryptoPriceEntity>;
-  getCryptoPriceById(id: string): Promise<CryptoPriceEntity>;
+  getCryptoPriceById(
+    id: string,
+    maxTimeGap: number,
+  ): Promise<CryptoPriceEntity>;
   getCryptoPriceBySymbol(symbol: string): Promise<CryptoPriceEntity>;
 }
