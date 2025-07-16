@@ -15,4 +15,4 @@ COPY --chown=node:node package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 COPY --chown=node:node --from=development /app/dist ./dist
 EXPOSE 3000
-CMD npm run migration:run && npm run start:prod
+CMD npm run migration:run:prod && npm run start:prod
