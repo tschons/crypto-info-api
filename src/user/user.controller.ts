@@ -28,7 +28,7 @@ import { EntityNotFoundFilter } from '../shared/filters/entity-not-found.filter'
 import { Profile } from '../shared/decorators/profile.decorator';
 import { ProfileEnum } from '../shared/enums/profile.enum';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { ProfileGuard } from '../shared/guards/profile.guard';
 import { AccessTokenPayload } from '../shared/value-objects/access-token-payload';
 
@@ -45,6 +45,7 @@ export class UserController {
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
   ) {}
 
+  @ApiOperation({ summary: 'Register a new user' })
   @Post()
   @Profile(ProfileEnum.Admin)
   async createUser(
@@ -53,6 +54,10 @@ export class UserController {
     return this.createUserUseCase.execute(createUserInputDto);
   }
 
+  @ApiOperation({
+    summary:
+      'Get all users or filtered users by name, email or profile - paginated',
+  })
   @Get()
   @Profile(ProfileEnum.Admin)
   async getUsers(
@@ -69,11 +74,14 @@ export class UserController {
     return paginatedUsers.items;
   }
 
+  @ApiOperation({ summary: 'Get a user by id' })
+  @Profile(ProfileEnum.Admin)
   @Get('/:userId')
   async getUserById(@Param('userId') userId: string): Promise<UserOutputDto> {
     return this.getUserByIdUseCase.execute(userId);
   }
 
+  @ApiOperation({ summary: 'Update a user' })
   @Put('/:userId')
   async updateUser(
     @Param('userId') userId: string,
@@ -98,6 +106,8 @@ export class UserController {
     return this.updateUserUseCase.execute(userId, updateUserInputDto);
   }
 
+  @ApiOperation({ summary: 'Update a user password' })
+  @Profile(ProfileEnum.Admin)
   @Patch('/:userId/password')
   async updatePassword(
     @Param('userId') userId: string,

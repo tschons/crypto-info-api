@@ -2,7 +2,7 @@ import { Controller, Post, UseGuards, Request, Body } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { GenerateTokenOutputDto } from './dtos/generate-token-output.dto';
 import { GenerateTokenUseCase } from './use-cases/generate-token.use-case';
-import { ApiBody } from '@nestjs/swagger';
+import { ApiBody, ApiOperation } from '@nestjs/swagger';
 import { RefreshTokenUseCase } from './use-cases/refresh-token.use-case';
 import { GenerateTokenInputDto } from './dtos/generate-token-input.dto';
 import { RefreshTokenInputDto } from './dtos/refresh-token-input.dto';
@@ -15,6 +15,7 @@ export class AuthController {
     private readonly refreshTokenUseCase: RefreshTokenUseCase,
   ) {}
 
+  @ApiOperation({ summary: 'Generate a access token with email and password' })
   @UseGuards(AuthGuard('local'))
   @ApiBody({ type: GenerateTokenInputDto })
   @Post('generate-token')
@@ -23,6 +24,7 @@ export class AuthController {
     return this.generateTokenUseCase.execute(authenticatedUser);
   }
 
+  @ApiOperation({ summary: 'Generate a access token with refresh token' })
   @Post('refresh-token')
   async refreshToken(
     @Body() refreshTokenInputDto: RefreshTokenInputDto,
