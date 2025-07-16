@@ -1,17 +1,18 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   Param,
   Patch,
   Post,
   Put,
   Query,
-  Res,
   Request,
+  Res,
+  UnauthorizedException,
   UseFilters,
   UseGuards,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { CreateUserUseCase } from './use-cases/create-user.use-case';
 import { CreateUserInputDto } from './dtos/create-user-input.dto';
@@ -31,6 +32,7 @@ import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { ProfileGuard } from '../shared/guards/profile.guard';
 import { AccessTokenPayload } from '../shared/value-objects/access-token-payload';
+import { DeleteUserUseCase } from './use-cases/delete-user.use-case';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'), ProfileGuard)
@@ -43,6 +45,7 @@ export class UserController {
     private readonly updatePasswordUseCase: UpdatePasswordUserCase,
     private readonly getUsersUseCase: GetUsersUseCase,
     private readonly getUserByIdUseCase: GetUserByIdUseCase,
+    private readonly deleteUserUseCase: DeleteUserUseCase,
   ) {}
 
   @ApiOperation({ summary: 'Register a new user' })
@@ -119,5 +122,12 @@ export class UserController {
       throw new UnauthorizedException('You can only change your own password');
 
     return this.updatePasswordUseCase.execute(userId, updatePasswordInputDto);
+  }
+
+  @ApiOperation({ summary: 'Remove a user' })
+  @Profile(ProfileEnum.Admin)
+  @Delete('/:userId')
+  async deleteUser(@Param('userId') userId: string): Promise<void> {
+    return this.deleteUserUseCase.execute(userId);
   }
 }

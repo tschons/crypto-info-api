@@ -10,6 +10,7 @@ import { GetUserByIdUseCase } from './use-cases/get-user-by-id.use-case';
 import { UpdatePasswordUserCase } from './use-cases/update-password.user-case';
 import { HashModule } from '../hash/hash.module';
 import { BcryptHashService } from '../hash/services/bcrypt-hash.service';
+import { DeleteUserUseCase } from './use-cases/delete-user.use-case';
 
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity]), HashModule],
@@ -21,6 +22,7 @@ import { BcryptHashService } from '../hash/services/bcrypt-hash.service';
     UpdatePasswordUserCase,
     GetUsersUseCase,
     GetUserByIdUseCase,
+    DeleteUserUseCase,
     {
       provide: 'UserRepositoryInterface',
       useClass: UserRepository,
