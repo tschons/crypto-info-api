@@ -6,6 +6,7 @@ COPY --chown=node:node package*.json ./
 RUN npm ci
 COPY --chown=node:node . .
 RUN npm run build
+RUN npm run migration:run
 
 FROM node:22-alpine AS production
 WORKDIR /app
