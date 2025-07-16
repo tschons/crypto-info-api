@@ -6,7 +6,6 @@ COPY --chown=node:node package*.json ./
 RUN npm ci
 COPY --chown=node:node . .
 RUN npm run build
-RUN npm run migration:run
 
 FROM node:22-alpine AS production
 WORKDIR /app
@@ -16,4 +15,4 @@ COPY --chown=node:node package*.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 COPY --chown=node:node --from=development /app/dist ./dist
 EXPOSE 3000
-CMD ["npm", "run", "start:prod"]
+CMD npm run migration:run && npm run start:prod
