@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { CryptoPriceRepository } from './crypto-price.repository';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CryptoPriceEntity } from './crypto-price.entity';
@@ -21,6 +21,7 @@ import { CryptoPriceOutputMapper } from './mappers/crypto-price-output.mapper';
     },
     GetCryptoPriceByIdUseCase,
     CryptoPriceOutputMapper,
+    Logger,
   ],
   controllers: [CryptoController],
 })

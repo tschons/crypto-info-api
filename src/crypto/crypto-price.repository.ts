@@ -2,7 +2,7 @@ import { CryptoPriceRepositoryInterface } from './interfaces/crypto-price-reposi
 import { CryptoPriceEntity } from './crypto-price.entity';
 import { MoreThan, Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 @Injectable()
 export class CryptoPriceRepository
@@ -12,6 +12,7 @@ export class CryptoPriceRepository
   constructor(
     @InjectRepository(CryptoPriceEntity)
     repository: Repository<CryptoPriceEntity>,
+    private readonly logger: Logger,
   ) {
     super(repository.target, repository.manager, repository.queryRunner);
   }
@@ -19,18 +20,18 @@ export class CryptoPriceRepository
   async createOrUpdateCryptoPrice(
     cryptoPriceEntity: CryptoPriceEntity,
   ): Promise<CryptoPriceEntity> {
+    this.logger.debug(
+      `Creating or updating crypto price: ${JSON.stringify(cryptoPriceEntity)}`,
+    );
     return this.save(cryptoPriceEntity);
   }
 
   async getCryptoPriceById(
     id: string,
-    maxTimeGap: number,
+    cacheInMinutes: number,
   ): Promise<CryptoPriceEntity> {
-    const xMinutosAgo = new Date(Date.now() - maxTimeGap * 60 * 1000);
-    return this.findOneByOrFail({ id, updatedAt: MoreThan(xMinutosAgo) });
-  }
-
-  async getCryptoPriceBySymbol(symbol: string): Promise<CryptoPriceEntity> {
-    return this.findOneByOrFail({ symbol });
+    const xMinutesAgo = new Date(Date.now() - cacheInMinutes * 60 * 1000);
+    this.logger.debug(`Getting crypto price by id: ${id}`);
+    return this.findOneByOrFail({ id, updatedAt: MoreThan(xMinutesAgo) });
   }
 }

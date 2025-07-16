@@ -3,12 +3,13 @@ import { CryptoPriceOutputDto } from '../dtos/crypto-price-output.dto';
 import { ConfigService } from '@nestjs/config';
 import { HttpService } from '@nestjs/axios';
 import { firstValueFrom } from 'rxjs';
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { PeriodEnum } from '../enums/period.enum';
 import { CoingeckoInfoOutputDto } from '../dtos/coingecko-info-output.dto';
 import { CryptoPriceOutputMapper } from '../mappers/crypto-price-output.mapper';
 import { plainToInstance } from 'class-transformer';
 import { AxiosResponse } from 'axios';
+import { NotConfiguredException } from '../../shared/exceptions/not-configured.exceptions';
 
 @Injectable()
 export class CoingeckoService implements CryptoInfoServiceInterface {
@@ -16,14 +17,21 @@ export class CoingeckoService implements CryptoInfoServiceInterface {
     private readonly configService: ConfigService,
     private readonly httpService: HttpService,
     private readonly cryptoPriceOutputMapper: CryptoPriceOutputMapper,
+    private readonly logger: Logger,
   ) {}
 
   async getCryptoPriceById(cryptoId: string): Promise<CryptoPriceOutputDto> {
     const coinGeckoApiUrl = this.configService.get<string>('COINGECKO_API_URL');
-    if (!coinGeckoApiUrl) throw new Error('COINGECKO_API_URL is not defined');
+    if (!coinGeckoApiUrl)
+      throw new NotConfiguredException('COINGECKO_API_URL is not defined');
 
     const httpHeaders = this.getHttpHeaders();
     const queryParams = this.getQueryParams(cryptoId);
+
+    this.logger.debug(
+      `Params for Coingecko API: ${JSON.stringify(queryParams)}`,
+    );
+
     const apiResponse = await firstValueFrom(
       this.httpService.get(coinGeckoApiUrl, {
         headers: httpHeaders,
@@ -31,6 +39,7 @@ export class CoingeckoService implements CryptoInfoServiceInterface {
         responseType: 'json',
       }),
     );
+
     const coingeckoInfoOutputDto = this.extractDtoFromResponse(
       cryptoId,
       apiResponse,
@@ -52,12 +61,17 @@ export class CoingeckoService implements CryptoInfoServiceInterface {
     if (!Array.isArray(apiResponse.data) || !apiResponse.data.length)
       throw new NotFoundException(`Crypto with id ${cryptoId} not found`);
 
+    this.logger.debug(
+      `Response from Coingecko API: ${JSON.stringify(apiResponse.data)}`,
+    );
+
     return plainToInstance(CoingeckoInfoOutputDto, apiResponse.data[0]);
   }
 
   private getHttpHeaders(): object {
     const coinGeckoApiKey = this.configService.get<string>('COINGECKO_API_KEY');
-    if (!coinGeckoApiKey) throw new Error('COINGECKO_API_KEY is not defined');
+    if (!coinGeckoApiKey)
+      throw new NotConfiguredException('COINGECKO_API_KEY is not defined');
 
     return {
       'x-cg-demo-api-key': coinGeckoApiKey,
@@ -70,7 +84,9 @@ export class CoingeckoService implements CryptoInfoServiceInterface {
     );
 
     if (!targetFiatCurrency)
-      throw new Error(': CRYPTO_TARGET_FIAT_CURRENCY is not defined');
+      throw new NotConfiguredException(
+        'CRYPTO_TARGET_FIAT_CURRENCY is not defined',
+      );
 
     return {
       ids: cryptoId.toLowerCase(),

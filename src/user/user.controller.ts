@@ -87,6 +87,14 @@ export class UserController {
     )
       throw new UnauthorizedException('You can only change your own profile');
 
+    if (
+      updateUserInputDto.profile &&
+      accessTokenPayload.role !== ProfileEnum.Admin
+    )
+      throw new UnauthorizedException(
+        'Only admins can change the profile of other users',
+      );
+
     return this.updateUserUseCase.execute(userId, updateUserInputDto);
   }
 
