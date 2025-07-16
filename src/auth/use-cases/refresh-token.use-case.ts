@@ -33,6 +33,7 @@ export class RefreshTokenUseCase implements UseCaseInterface {
       );
       const user = await this.userRepository.getUserById(
         refreshTokenPayload.sub,
+        false,
       );
       const authenticatedUser = new AuthenticatedUser(user.id, user.profile);
 

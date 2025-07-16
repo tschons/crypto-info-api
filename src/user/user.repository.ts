@@ -1,10 +1,11 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Inject, Injectable, Logger } from '@nestjs/common';
 import { Like, Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
-import { UserRepositoryInterface } from './interfaces/user-repository.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { UsersFilterInterface } from './interfaces/users-filter.interface';
 import { FindOptionsWhere } from 'typeorm/find-options/FindOptionsWhere';
+import { HashServiceInterface } from '../shared/interfaces/hash-service.interface';
+import { UserRepositoryInterface } from './interfaces/user-repository.interface';
 
 @Injectable()
 export class UserRepository
@@ -14,11 +15,17 @@ export class UserRepository
   constructor(
     @InjectRepository(UserEntity) repository: Repository<UserEntity>,
     private readonly logger: Logger,
+    @Inject('HashServiceInterface')
+    private readonly hashService: HashServiceInterface,
   ) {
     super(repository.target, repository.manager, repository.queryRunner);
   }
 
   async createUser(userEntity: UserEntity): Promise<UserEntity> {
+    userEntity.password = await this.hashService.generateHash(
+      userEntity.password,
+    );
+
     this.logger.debug(`Creating user: ${JSON.stringify(userEntity)}`);
     const insertResult = await this.insert(userEntity);
     userEntity.id = insertResult.identifiers[0].id;
@@ -26,24 +33,45 @@ export class UserRepository
   }
 
   async updateUser(userEntity: UserEntity): Promise<UserEntity> {
+    if (userEntity.password)
+      userEntity.password = await this.hashService.generateHash(
+        userEntity.password,
+      );
+
     this.logger.debug(`Updating user: ${JSON.stringify(userEntity)}`);
     return this.save(userEntity);
   }
 
-  async getUserByIdAndPassword(
+  async getUserById(
     userId: string,
-    password: string,
+    includePassword: boolean = false,
   ): Promise<UserEntity> {
     this.logger.debug(`Getting user by id and password: ${userId}`);
-    return this.findOneByOrFail({ id: userId, password });
+
+    if (includePassword) {
+      return this.createQueryBuilder('user')
+        .addSelect('user.password')
+        .where('user.id = :id', { id: userId })
+        .getOneOrFail();
+    }
+
+    return this.findOneByOrFail({ id: userId });
   }
 
-  async getUserByEmailAndPassword(
+  async getUserByEmail(
     email: string,
-    password: string,
+    includePassword: boolean = false,
   ): Promise<UserEntity> {
     this.logger.debug(`Getting user by email and password: ${email}`);
-    return this.findOneByOrFail({ email, password });
+
+    if (includePassword) {
+      return this.createQueryBuilder('user')
+        .addSelect('user.password')
+        .where('user.email = :email', { email })
+        .getOneOrFail();
+    }
+
+    return this.findOneByOrFail({ email });
   }
 
   async getUsers(
@@ -64,10 +92,5 @@ export class UserRepository
       take: usersFilter.pageSize,
       where: filter,
     });
-  }
-
-  async getUserById(userId: string): Promise<UserEntity> {
-    this.logger.debug(`Getting user by id: ${userId}`);
-    return this.findOneByOrFail({ id: userId });
   }
 }
