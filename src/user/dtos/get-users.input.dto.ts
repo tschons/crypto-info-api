@@ -1,5 +1,5 @@
 import { ProfileEnum } from '../../shared/enums/profile.enum';
-import { IsEnum } from 'class-validator';
+import { IsEnum, IsOptional } from 'class-validator';
 import { PaginationDto } from '../../shared/dtos/pagination.dto';
 import { UsersFilterInterface } from '../interfaces/users-filter.interface';
 import { Type } from 'class-transformer';
@@ -17,6 +17,7 @@ export class GetUsersInputDto
 
   @ApiPropertyOptional({ description: 'Profile of the user' })
   @IsEnum(ProfileEnum, { message: 'Invalid profile' })
+  @IsOptional()
   @Type(() => Number)
   profile?: ProfileEnum;
 }

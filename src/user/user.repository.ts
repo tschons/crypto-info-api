@@ -93,4 +93,9 @@ export class UserRepository
       where: filter,
     });
   }
+
+  async deleteUser(userId: string): Promise<void> {
+    this.logger.debug(`Deleting user: ${userId}`);
+    await this.softDelete(userId);
+  }
 }

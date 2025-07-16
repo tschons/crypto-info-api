@@ -14,6 +14,7 @@ Authenticated API to check cryptocurrency prices.
     <li>Update any user's password</li>
     <li>Get data from all users</li>
     <li>User search with filter</li>
+    <li>User deletion</li>
     <li>Get cryptocurrency prices</li>
 </ul>
 
