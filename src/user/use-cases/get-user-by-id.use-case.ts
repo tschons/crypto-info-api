@@ -16,7 +16,7 @@ export class GetUserByIdUseCase implements UseCaseInterface {
     try {
       return plainToInstance(
         UserOutputDto,
-        await this.userRepository.getUserById(userId),
+        await this.userRepository.getUserById(userId, false),
       );
     } catch (error) {
       if (error.name !== ErrorEnum.EntityNotFound)

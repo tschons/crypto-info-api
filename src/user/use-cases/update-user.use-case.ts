@@ -2,8 +2,8 @@ import { UseCaseInterface } from '../../shared/interfaces/use-case.interface';
 import { UpdateUserInputDto } from '../dtos/update-user-input.dto';
 import { UserOutputDto } from '../dtos/user-output.dto';
 import { Inject, Logger } from '@nestjs/common';
-import { UserRepositoryInterface } from '../interfaces/user-repository.interface';
 import { plainToInstance } from 'class-transformer';
+import { UserRepositoryInterface } from '../interfaces/user-repository.interface';
 
 export class UpdateUserUseCase implements UseCaseInterface {
   constructor(
@@ -17,7 +17,7 @@ export class UpdateUserUseCase implements UseCaseInterface {
     updateUserInputDto: UpdateUserInputDto,
   ): Promise<UserOutputDto> {
     try {
-      const user = await this.userRepository.getUserById(userId);
+      const user = await this.userRepository.getUserById(userId, false);
 
       user.name = updateUserInputDto.name;
       user.profile = updateUserInputDto.profile ?? user.profile;

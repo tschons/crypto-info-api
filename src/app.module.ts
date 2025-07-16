@@ -4,6 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CryptoModule } from './crypto/crypto.module';
+import { HashModule } from './hash/hash.module';
 import typeormConfig from './config/typeorm';
 
 @Module({
@@ -18,6 +19,7 @@ import typeormConfig from './config/typeorm';
     AuthModule,
     UserModule,
     CryptoModule,
+    HashModule,
   ],
   controllers: [],
 })
