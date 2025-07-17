@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   Param,
   Patch,
@@ -10,7 +11,6 @@ import {
   Query,
   Request,
   Res,
-  UnauthorizedException,
   UseFilters,
   UseGuards,
 } from '@nestjs/common';
@@ -79,9 +79,19 @@ export class UserController {
   }
 
   @ApiOperation({ summary: 'Get a user by id' })
-  @Profile(ProfileEnum.Admin)
   @Get('/:userId')
-  async getUserById(@Param('userId') userId: string): Promise<UserOutputDto> {
+  async getUserById(
+    @Param('userId') userId: string,
+    @Request() request,
+  ): Promise<UserOutputDto> {
+    const accessTokenPayload = request.user as AccessTokenPayload;
+
+    if (
+      accessTokenPayload.role !== ProfileEnum.Admin &&
+      userId !== accessTokenPayload.sub
+    )
+      throw new ForbiddenException('You can only get your own profile');
+
     return this.getUserByIdUseCase.execute(userId);
   }
 
@@ -97,21 +107,18 @@ export class UserController {
       userId !== accessTokenPayload.sub &&
       accessTokenPayload.role !== ProfileEnum.Admin
     )
-      throw new UnauthorizedException('You can only change your own profile');
+      throw new ForbiddenException('You can only change your own profile');
 
     if (
       updateUserInputDto.profile &&
       accessTokenPayload.role !== ProfileEnum.Admin
     )
-      throw new UnauthorizedException(
-        'Only admins can change the profile of other users',
-      );
+      throw new ForbiddenException('Only admins can change the profile');
 
     return this.updateUserUseCase.execute(userId, updateUserInputDto);
   }
 
   @ApiOperation({ summary: 'Update a user password' })
-  @Profile(ProfileEnum.Admin)
   @Patch('/:userId/password')
   async updatePassword(
     @Param('userId') userId: string,
@@ -120,7 +127,7 @@ export class UserController {
   ): Promise<void> {
     const accessTokenPayload = request.user as AccessTokenPayload;
     if (userId !== accessTokenPayload.sub)
-      throw new UnauthorizedException('You can only change your own password');
+      throw new ForbiddenException('You can only change your own password');
 
     return this.updatePasswordUseCase.execute(userId, updatePasswordInputDto);
   }
