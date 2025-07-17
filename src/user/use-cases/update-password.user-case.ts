@@ -13,6 +13,14 @@ export class UpdatePasswordUserCase implements UseCaseInterface {
     private readonly hashService: HashServiceInterface,
   ) {}
 
+  /**
+   * Executes the password update flow.
+   *
+   * @param userId The unique identifier of the user
+   * @param updatePasswordInputDto DTO containing the current and new password
+   * @returns A promise void
+   * @throws {UnauthorizedException} When the current password is incorrect
+   */
   async execute(
     userId: string,
     updatePasswordInputDto: UpdatePasswordInputDto,

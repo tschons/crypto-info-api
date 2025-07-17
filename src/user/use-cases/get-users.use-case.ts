@@ -14,6 +14,12 @@ export class GetUsersUseCase implements UseCaseInterface {
     private readonly logger: Logger,
   ) {}
 
+  /**
+   * Executes the user search flow.
+   *
+   * @param getUsersInputDto Input data for filtering and pagination
+   * @returns PaginatedType<UserOutputDto> with user list and pagination details
+   */
   async execute(
     getUsersInputDto: GetUsersInputDto,
   ): Promise<PaginatedType<UserOutputDto>> {

@@ -16,6 +16,13 @@ export class CreateUserUseCase implements UseCaseInterface {
     private readonly logger: Logger,
   ) {}
 
+  /**
+   * Executes the user creation flow.
+   *
+   * @param createUserInputDto Data for creating a new user
+   * @returns The newly created user's output DTO
+   * @throws {DuplicateKeyException} When the input email already exists
+   */
   async execute(
     createUserInputDto: CreateUserInputDto,
   ): Promise<UserOutputDto> {
