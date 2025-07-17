@@ -1,6 +1,11 @@
 import { UseCaseInterface } from '../../shared/interfaces/use-case.interface';
 import { GenerateTokenOutputDto } from '../dtos/generate-token-output.dto';
-import { Inject, Logger, UnauthorizedException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Logger,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
 import { UserRepositoryInterface } from 'src/user/interfaces/user-repository.interface';
@@ -24,9 +29,6 @@ export class RefreshTokenUseCase implements UseCaseInterface {
   async execute(
     refreshTokenInputDto: RefreshTokenInputDto,
   ): Promise<GenerateTokenOutputDto> {
-    if (!refreshTokenInputDto)
-      throw new UnauthorizedException('Empty refresh token');
-
     try {
       const refreshTokenPayload = this.validateRefreshToken(
         refreshTokenInputDto.refreshToken,
