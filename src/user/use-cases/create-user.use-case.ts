@@ -5,6 +5,8 @@ import { UserOutputDto } from '../dtos/user-output.dto';
 import { UserRepositoryInterface } from '../interfaces/user-repository.interface';
 import { plainToInstance } from 'class-transformer';
 import { UserEntity } from '../user.entity';
+import { DuplicateKeyException } from '../../shared/exceptions/duplicate-key.exception';
+import { ErrorEnum } from '../../shared/enums/error.enum';
 
 @Injectable()
 export class CreateUserUseCase implements UseCaseInterface {
@@ -22,6 +24,13 @@ export class CreateUserUseCase implements UseCaseInterface {
       userEntity = await this.userRepository.createUser(userEntity);
       return plainToInstance(UserOutputDto, userEntity);
     } catch (error) {
+      if (
+        error.name === ErrorEnum.QueryFailed &&
+        error.code === 'ER_DUP_ENTRY'
+      ) {
+        throw new DuplicateKeyException('Email already in use');
+      }
+
       this.logger.error(
         `Error creating user: ${createUserInputDto.email}`,
         error.stack,

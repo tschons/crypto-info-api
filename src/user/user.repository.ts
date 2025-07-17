@@ -23,12 +23,14 @@ export class UserRepository
 
   async createUser(userEntity: UserEntity): Promise<UserEntity> {
     userEntity.password = await this.hashService.generateHash(
-      userEntity.password,
+      userEntity.password!,
     );
 
     this.logger.debug(`Creating user: ${JSON.stringify(userEntity)}`);
     const insertResult = await this.insert(userEntity);
     userEntity.id = insertResult.identifiers[0].id;
+
+    delete userEntity.password;
     return userEntity;
   }
 
