@@ -12,6 +12,12 @@ export class GetUserByIdUseCase implements UseCaseInterface {
     private readonly logger: Logger,
   ) {}
 
+  /**
+   * Executes the user retrieval flow.
+   *
+   * @param userId The unique identifier of the user to be retrieved
+   * @returns The output DTO of the user
+   */
   async execute(userId: string): Promise<UserOutputDto> {
     try {
       return plainToInstance(

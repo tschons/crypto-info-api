@@ -16,6 +16,12 @@ export class GenerateTokenUseCase implements UseCaseInterface {
     private readonly logger: Logger,
   ) {}
 
+  /**
+   * Executes the generation of access and refresh tokens.
+   *
+   * @param authenticatedUser The authenticated user for whom to generate the tokens
+   * @returns DTO containing the tokens
+   */
   async execute(
     authenticatedUser: AuthenticatedUser,
   ): Promise<GenerateTokenOutputDto> {

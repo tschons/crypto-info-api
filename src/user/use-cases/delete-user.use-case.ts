@@ -10,6 +10,12 @@ export class DeleteUserUseCase implements UseCaseInterface {
     private readonly logger: Logger,
   ) {}
 
+  /**
+   * Executes the user deletion flow.
+   *
+   * @param userId The unique identifier of the user to be deleted
+   * @returns A promise void
+   */
   execute(userId: string): Promise<void> {
     try {
       return this.userRepository.deleteUser(userId);
