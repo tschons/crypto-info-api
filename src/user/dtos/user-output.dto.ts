@@ -12,9 +12,6 @@ export class UserOutputDto {
   @ApiProperty({ description: 'Email of the user' })
   email: string;
 
-  @ApiProperty({ description: 'Password of the user' })
-  password: string;
-
   @ApiProperty({ description: 'Profile of the user' })
   profile: ProfileEnum;
 

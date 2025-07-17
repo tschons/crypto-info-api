@@ -28,7 +28,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     if (
       !(await this.hashService.compareHash(
         password,
-        userTryingAuthenticate.password,
+        userTryingAuthenticate.password!,
       ))
     )
       throw new UnauthorizedException(new Error('The password is incorrect'));

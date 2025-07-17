@@ -22,7 +22,7 @@ export class UpdatePasswordUserCase implements UseCaseInterface {
     if (
       !(await this.hashService.compareHash(
         updatePasswordInputDto.currentPassword,
-        user.password,
+        user.password!,
       ))
     ) {
       throw new UnauthorizedException('The password is incorrect');
