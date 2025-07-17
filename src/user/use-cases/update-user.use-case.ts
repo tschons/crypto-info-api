@@ -12,6 +12,13 @@ export class UpdateUserUseCase implements UseCaseInterface {
     private readonly logger: Logger,
   ) {}
 
+  /**
+   * Executes the user update flow.
+   *
+   * @param userId Unique identifier of the user to be updated
+   * @param updateUserInputDto DTO with the data to be modified
+   * @returns DTO with the user's updated data
+   */
   async execute(
     userId: string,
     updateUserInputDto: UpdateUserInputDto,

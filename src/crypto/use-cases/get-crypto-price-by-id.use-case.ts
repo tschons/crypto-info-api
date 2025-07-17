@@ -21,6 +21,14 @@ export class GetCryptoPriceByIdUseCase implements UseCaseInterface {
     private readonly logger: Logger,
   ) {}
 
+  /**
+   * Executes the retrieval process for the crypto price:
+   * Try the database first, if it don't find an updated price within X minutes,
+   * search through the service
+   *
+   * @param cryptoId The unique identifier of the cryptocurrency
+   * @returns DTO containing current price information
+   */
   async execute(cryptoId: string): Promise<CryptoPriceOutputDto> {
     try {
       const cryptoPrice = await this.getCryptoPriceFromDatabase(cryptoId);
