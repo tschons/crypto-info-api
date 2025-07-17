@@ -33,11 +33,12 @@ import { ApiBearerAuth, ApiOperation } from '@nestjs/swagger';
 import { ProfileGuard } from '../shared/guards/profile.guard';
 import { AccessTokenPayload } from '../shared/value-objects/access-token-payload';
 import { DeleteUserUseCase } from './use-cases/delete-user.use-case';
+import { DuplicateKeyFilter } from '../shared/filters/duplicate-key.filter';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'), ProfileGuard)
 @Controller('users')
-@UseFilters(EntityNotFoundFilter)
+@UseFilters(EntityNotFoundFilter, DuplicateKeyFilter)
 export class UserController {
   constructor(
     private readonly createUserUseCase: CreateUserUseCase,

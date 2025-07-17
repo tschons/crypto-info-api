@@ -3,4 +3,5 @@ export enum ErrorEnum {
   'EntityNotFound' = 'EntityNotFoundError',
   'jsonWebToken' = 'JsonWebTokenError',
   'TokenExpired' = 'TokenExpiredError',
+  'QueryFailed' = 'QueryFailedError',
 }

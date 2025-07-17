@@ -20,7 +20,7 @@ export class UserEntity {
   email: string;
 
   @Column({ select: false, length: 80 })
-  password: string;
+  password?: string;
 
   @Column({ type: 'enum', enum: ProfileEnum })
   profile: ProfileEnum = ProfileEnum.Client;
