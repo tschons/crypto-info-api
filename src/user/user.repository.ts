@@ -1,4 +1,9 @@
-import { Inject, Injectable, Logger } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  Logger,
+} from '@nestjs/common';
 import { Like, Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -80,6 +85,9 @@ export class UserRepository
     usersFilter: UsersFilterInterface,
   ): Promise<[UserEntity[], number]> {
     const filter: FindOptionsWhere<UserEntity> = {};
+
+    if (!(usersFilter.orderBy in new UserEntity()))
+      throw new BadRequestException('The value of orderBy is invalid');
 
     if (usersFilter.name) filter.name = Like(`%${usersFilter.name}%`);
 
